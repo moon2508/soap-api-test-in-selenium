@@ -19,6 +19,7 @@ public class SoapAPITesting {
                     "    </Body>\n" +
                     "</Envelope>";
             System.out.println("Request: "+ request);
+
             StringEntity entity = new StringEntity(request);
             post.setEntity(entity);
             post.setHeader("Content-Type", "text/xml");
