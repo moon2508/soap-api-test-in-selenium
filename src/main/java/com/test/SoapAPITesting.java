@@ -9,6 +9,7 @@ import org.apache.http.util.EntityUtils;
 public class SoapAPITesting {
     public static void main(String[] args) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
+
             HttpPost post = new HttpPost("https://haloship.imediatech.com.vn:8087/ItopupService1.4/services/TopupInterface?wsdl");
             String request = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
                     "    <Body>\n" +
