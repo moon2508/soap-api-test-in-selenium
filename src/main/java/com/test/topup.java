@@ -1,13 +1,7 @@
 package com.test;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.json.JSONArray;
-
-
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.PrivateKey;
@@ -157,19 +151,26 @@ public class topup extends login {
     int productID = 1;
     int quantity = 1;
     int amount = 50000;
+
         String resLogin = login.requestHandle(1400, username,  password,  privateKey, url);
         System.out.println("======================================================================");
         System.out.println("Response Login: \n"+ resLogin);
+
+        //ham login
         String jsonLogin = login.decodeJson(resLogin);
         String token = login.getInfo(jsonLogin,"token");
+
         // ham topup transaction
         // String response = topup.requestHandle(operation,username,requestID,  token, phone,  provider,amount,0,0,keyBirthdayTime, privateKey, url);
+
         //ham check transaction
         //String response = topup.requestHandle(1300,username,"HangPTDV_TOPUP_2011202415460017_7896",  token, "",  "",0,0,0,keyBirthdayTime, privateKey, url);
+
         // ham download transaction
         String response = topup.requestHandle(1000,username,requestID,  token, phone,  provider,amount,555,2,keyBirthdayTime, privateKey, url);
+
         //ham redownload transaction
-//        String response = topup.requestHandle(1100,username,"HangPTDV_TOPUP_2011202416060013_4890",  token, phone,  provider,amount,productID,2,keyBirthdayTime, privateKey, url);
+        //String response = topup.requestHandle(1100,username,"HangPTDV_TOPUP_2011202416060013_4890",  token, phone,  provider,amount,productID,2,keyBirthdayTime, privateKey, url);
 
         String jsonString = topup.decodeJson(response);
 
@@ -178,8 +179,6 @@ public class topup extends login {
         System.out.println("======================================================================");
         System.out.println("ErrorCode: " + topup.getInfo(jsonString, "errorCode"));
         System.out.println("Softpin Code: "+ topup.getSoftpinCode(jsonString,softpinKey,"12345678"));
-
-
 
 
 }
