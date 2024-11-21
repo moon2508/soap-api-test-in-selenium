@@ -1,4 +1,4 @@
-package com.test;
+package itopup;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import javax.crypto.Cipher;
@@ -9,7 +9,29 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public class topup extends login {
-    public  String requestHandle(int operation, String username, String requestID, String token, String phone, String provider, int amount, int productID,int quantity,String key, PrivateKey privateKey, String url) throws Exception {
+    String requestID;
+   String token;
+   String phone;
+   String provider;
+   long amount;
+   int productID;
+   int quantity;
+   String key;
+
+    public topup(String username, String requestID, String token, String phone, String provider, long amount, int productID,int quantity,String key, PrivateKey privateKey, String url){
+        super(username,null,privateKey,url);
+        this.requestID=requestID;
+        this.token=token;
+        this.phone = phone;
+        this.provider = provider;
+        this.amount = amount;
+        this.productID = productID;
+        this.quantity = quantity;
+        this.key= key;
+
+
+    }
+    public  String requestHandle(int operation, String username, String requestID, String token, String phone, String provider, long amount, int productID,int quantity,String key, PrivateKey privateKey, String url) throws Exception {
         String data = username +"|" + requestID + "|"+ token + "|"+ operation;
         System.out.println("Data:" + data);
 
@@ -73,7 +95,8 @@ public class topup extends login {
         // Chuyển kết quả giải mã từ byte[] sang String
         return new String(decryptedBytes, "UTF-8");
     }
-    public ArrayList  getSoftpinCode(String data, String secretKey,String iv) throws  Exception {
+    public ArrayList  getSoftpinCode(String data, String secretKey,String iv) throws Exception {
+
         ArrayList<String> softpinPinCodes = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(data);
 
@@ -103,8 +126,7 @@ public class topup extends login {
 
 
     public static void main(String[] args) throws Exception {
-
-
+        baseRequest base = new baseRequest();
     String url = "https://haloship.imediatech.com.vn:8087/ItopupService2.0_IMD/services/TopupInterface";
     String username = "IMEDIA_TEST";
     String password = "24112536637251";
@@ -138,20 +160,19 @@ public class topup extends login {
             "DXCntABHCGckX5298IljOQTUq5UpnsAm98n9+LkwTPU+aQ2OUT/fT/jluXVlNSoz\n" +
             "c5DZy1yl2g4BJPashtqNjnCW\n" +
             "-----END PRIVATE KEY-----";
-        topup topup= new topup();
-        login login = new login();
+        // Chuyển PEM thành đối tượng PrivateKey
+        PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
+        int operation = 1200;
+        String requestID = base.createRequestID("HangPTDV_TOPUP");
+        String phone = "0982345678";
+        String provider = "Viettel";
+        String softpinKey = "70cf4fe7b75b72ddd78cbdb6";
+        int productID = 1;
+        int quantity = 1;
+        int amount = 50000;
 
-    // Chuyển PEM thành đối tượng PrivateKey
-    PrivateKey privateKey = topup.getPrivateKeyFromPEM(privateKeyPEM);
-    int operation = 1200;
-    String requestID = topup.createRequestID("HangPTDV_TOPUP");
-    String phone = "0982345678";
-    String provider = "Viettel";
-    String softpinKey = "70cf4fe7b75b72ddd78cbdb6";
-    int productID = 1;
-    int quantity = 1;
-    int amount = 50000;
 
+        login login = new login(username,  password,  privateKey, url);
         String resLogin = login.requestHandle(1400, username,  password,  privateKey, url);
         System.out.println("======================================================================");
         System.out.println("Response Login: \n"+ resLogin);
@@ -160,17 +181,20 @@ public class topup extends login {
         String jsonLogin = login.decodeJson(resLogin);
         String token = login.getInfo(jsonLogin,"token");
 
+        topup topup= new topup(login.username,requestID,  token, phone,  provider,amount,productID,quantity,keyBirthdayTime, login.privateKey, login.url);
+
+
         // ham topup transaction
-        // String response = topup.requestHandle(operation,username,requestID,  token, phone,  provider,amount,0,0,keyBirthdayTime, privateKey, url);
+         String response = topup.requestHandle(operation,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
 
         //ham check transaction
-        //String response = topup.requestHandle(1300,username,"HangPTDV_TOPUP_2011202415460017_7896",  token, "",  "",0,0,0,keyBirthdayTime, privateKey, url);
+        //String response = topup.requestHandle(1300,topup.username,"HangPTDV_TOPUP_2011202415460017_7896",  topup.token, "",  "",0,0,0,topup.key, topup.privateKey, topup.url);
 
         // ham download transaction
-        String response = topup.requestHandle(1000,username,requestID,  token, phone,  provider,amount,555,2,keyBirthdayTime, privateKey, url);
+//        String response = topup.requestHandle(1000,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,555,2,topup.key, topup.privateKey, topup.url);
 
         //ham redownload transaction
-        //String response = topup.requestHandle(1100,username,"HangPTDV_TOPUP_2011202416060013_4890",  token, phone,  provider,amount,productID,2,keyBirthdayTime, privateKey, url);
+        //String response = topup.requestHandle(1100,topup.username,"HangPTDV_TOPUP_2011202416060013_4890",  topup.token, topup.phone,  topup.provider,topup.amount,topup.productID,2,topup.key, topup.privateKey, topup.url);
 
         String jsonString = topup.decodeJson(response);
 
@@ -178,7 +202,7 @@ public class topup extends login {
         System.out.println("Response Topup: \n" + response);
         System.out.println("======================================================================");
         System.out.println("ErrorCode: " + topup.getInfo(jsonString, "errorCode"));
-        System.out.println("Softpin Code: "+ topup.getSoftpinCode(jsonString,softpinKey,"12345678"));
+//        System.out.println("Softpin Code: "+ topup.getSoftpinCode(jsonString,softpinKey,"12345678"));
 
 
 }

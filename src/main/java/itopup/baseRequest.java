@@ -1,4 +1,4 @@
-package com.test;
+package itopup;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -41,25 +41,20 @@ public class baseRequest {
         byte[] signedBytes = signature.sign();
         return Base64.getEncoder().encodeToString(signedBytes);
     }
-    public  String createRequestID(String partnerName) {
-        String requestID = "";
-        try {
+    public  String createRequestID(String partnerName) throws Exception {
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmssss");
             String formattedDate = dateFormat.format(new Date());
             // Sinh số ngẫu nhiên 6 chữ số
             Random random = new Random();
             int subResult = random.nextInt(9000) + 1000;
             return partnerName+ "_" + formattedDate+ "_"+ subResult;
-        } catch (Exception e) {
-            requestID = "";
-            e.printStackTrace();
-        }
-        return requestID;
+
     }
 
-    public String decodeJson(String xmlResponse){
+    public String decodeJson(String xmlResponse) throws  Exception{
         String JsonResponse = null;
-        try {
+
             // Bước 1: Parse XML
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -74,14 +69,10 @@ public class baseRequest {
                     .replace("&quot;", "\"")
                     .replace("&amp;", "&");
 
-        } catch (Exception e) {
-            JsonResponse = "";
-            e.printStackTrace();
-        }
         return JsonResponse;
     }
     public static void main(String[] args) throws Exception {
-        try {
+
             // Chuỗi Private Key dưới dạng PEM
             String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" +
                     "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCyVWVR+TP7TGIV\n" +
@@ -124,8 +115,6 @@ public class baseRequest {
 
             System.out.println(obj.createRequestID("Hangptdv"));
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 }
