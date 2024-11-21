@@ -1,4 +1,4 @@
-package com.test;
+package itopup;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -10,6 +10,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class login extends baseRequest {
+
+    String username;
+    String password;
+    PrivateKey privateKey;
+    String url;
+    public login( String username, String password, PrivateKey privateKey, String url)
+    {
+        this.username =username;
+        this.password = password;
+        this.privateKey = privateKey;
+        this.url= url;
+    }
     public String sendRequest(String url, String request) throws Exception{
          CloseableHttpClient client = HttpClients.createDefault();
             HttpPost post = new HttpPost(url);
@@ -48,6 +60,7 @@ public  String requestHandle(int operation, String username, String password, Pr
 
 }
     public static void main(String[] args) throws Exception {
+        baseRequest base = new baseRequest();
         String url = "https://haloship.imediatech.com.vn:8087/ItopupService2.0_IMD/services/TopupInterface?wsdl";
         String username = "IMEDIA_TEST";
         String password = "24112536637251";
@@ -80,11 +93,10 @@ public  String requestHandle(int operation, String username, String password, Pr
                 "DXCntABHCGckX5298IljOQTUq5UpnsAm98n9+LkwTPU+aQ2OUT/fT/jluXVlNSoz\n" +
                 "c5DZy1yl2g4BJPashtqNjnCW\n" +
                 "-----END PRIVATE KEY-----";
-        login login = new login();
-
         // Chuyển PEM thành đối tượng PrivateKey
-        PrivateKey privateKey = login.getPrivateKeyFromPEM(privateKeyPEM);
-        String response = login.requestHandle(1400, username,  password,  privateKey, url);
+        PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
+        login login = new login(username,  password,  privateKey, url);
+        String response = login.requestHandle(1400, login.username,  login.password,  login.privateKey, login.url);
         String jsonString = login.decodeJson(response);
         // In chuỗi phản hồi ra console
         System.out.println("======================================================================");
