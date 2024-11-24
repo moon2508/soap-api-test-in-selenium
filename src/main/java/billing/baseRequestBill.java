@@ -1,5 +1,6 @@
 package billing;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.HttpPost;
@@ -70,7 +71,16 @@ public class baseRequestBill {
         return rootNode.get(info).asText();
 
     }
+ public String getInf(String jsonString,String obj,String info) throws JsonProcessingException {
+     ObjectMapper mapper = new ObjectMapper();
+     JsonNode rootNode = mapper.readTree(jsonString);
 
+     // Truy cập đối tượng lồng nhau
+     JsonNode personNode = rootNode.get(obj);
+     String inform = personNode.get(info).asText();
+   return inform;
+
+ }
 
     public  String formatJSON(String jsonString) {
         JSONObject jsonObject = new JSONObject(jsonString); // Parse chuỗi JSON
