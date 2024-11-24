@@ -8,8 +8,8 @@ public class payBill extends getBill{
     String referenceCode;
     long amount;
     String phone;
- public payBill(int prCodeBill, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode, long amount, String phone, PrivateKey privateKey, String url){
-     super(0,username, password,serviceCode,billingCode,requestID,privateKey,url);
+ public payBill(int prCodeBill, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode, long amount, String phone, PrivateKey privateKey, String url, String typeService){
+     super(0,username, password,serviceCode,billingCode,requestID,privateKey,url,typeService);
      this.prCodeBill =prCodeBill;
      this.referenceCode = referenceCode;
      this.amount = amount;
@@ -63,24 +63,37 @@ public class payBill extends getBill{
         String url = "http://222.252.17.162:8080/v1/sandbox/services/paybill";
         String username = "integrate_account";
         String password = "a1ec3b73f427c514ab64ce99c891b73f";
-        String serviceCode = "EVN";
+        String serviceCode = "TPB";
         String billCode ="0355273394";
         String requestID = base.createRequestID("HangPTDV_payBill");
-        String referCode = "03552733941732179869336";
-        long amount = 109999;
+
+
         String phone = "0355273394";
 
         // Chuyển PEM thành đối tượng PrivateKey
         PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
 
-        getBill getbill = new getBill(1009,username,password,serviceCode,billCode,requestID,privateKey,url);
-        payBill paybill = new payBill(1010,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,requestID,referCode,amount,phone,getbill.privateKey,getbill.url);
+        getBill getbill = new getBill(1009,username,password,serviceCode,billCode,requestID,privateKey,url,"TC");
         String responseGetBill = getbill.queryBill(getbill.prCode,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,getbill.requestID,getbill.privateKey,getbill.url);
-        System.out.println("Response PayBill: "+ base.formatJSON(responseGetBill));
+        System.out.println("Response GetBill: "+ base.formatJSON(responseGetBill));
         System.out.println("======================================================================");
+        String referCode = getbill.getInf(responseGetBill,"data","reference_code");
+        long amount = Long.parseLong(getbill.getInf(responseGetBill,"data","amount"));
+        long minAmount = Long.parseLong(getbill.getInf(responseGetBill,"data","minAmount"));
 
-       String responsePayBill = paybill.pay_bill(paybill.prCodeBill, paybill.username,paybill.password,paybill.serviceCode,paybill.billCode,paybill.requestID,paybill.referenceCode,paybill.amount,paybill.phone,paybill.privateKey,paybill.url);
-        System.out.println("Response PayBill: "+ base.formatJSON(responsePayBill));
+        payBill paybill = new payBill(1010,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,requestID,referCode,amount,phone,getbill.privateKey,getbill.url,getbill.typeService);
+       if(paybill.typeService.equals("HD")){
+           paybill.amount = amount;
+           System.out.println("Thanh toan giao dich "+ paybill.typeService +": "+ referCode + " voi so tien "+ paybill.amount);
+           String responsePayBill = paybill.pay_bill(paybill.prCodeBill, paybill.username,paybill.password,paybill.serviceCode,paybill.billCode,paybill.requestID,paybill.referenceCode,paybill.amount,paybill.phone,paybill.privateKey,paybill.url);
+           System.out.println("Response PayBill: "+ base.formatJSON(responsePayBill));
+       } else if (paybill.typeService.equals("TC")){
+           paybill.amount = minAmount;
+           System.out.println("Thanh toan giao dich: "+ paybill.typeService+": "+ referCode + " voi so tien "+ paybill.amount);
+           String responsePayBill = paybill.pay_bill(paybill.prCodeBill, paybill.username,paybill.password,paybill.serviceCode,paybill.billCode,paybill.requestID,paybill.referenceCode,paybill.amount,paybill.phone,paybill.privateKey,paybill.url);
+           System.out.println("Response PayBill: "+ base.formatJSON(responsePayBill));
+       }
+
     }
 
 }
