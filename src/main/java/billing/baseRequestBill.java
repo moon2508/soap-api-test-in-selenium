@@ -71,15 +71,23 @@ public class baseRequestBill {
         return rootNode.get(info).asText();
 
     }
- public String getInf(String jsonString,String obj,String info) throws JsonProcessingException {
+ public String getInf(String jsonString,String obj,String info)  {
+        String inf ="";
+     try {
      ObjectMapper mapper = new ObjectMapper();
-     JsonNode rootNode = mapper.readTree(jsonString);
+     JsonNode rootNode = null;
+
+         rootNode = mapper.readTree(jsonString);
+
 
      // Truy cập đối tượng lồng nhau
      JsonNode personNode = rootNode.get(obj);
-     String inform = personNode.get(info).asText();
-   return inform;
+    inf= personNode.get(info).asText();
 
+     } catch (JsonProcessingException e) {
+         throw new RuntimeException(e);
+     }
+     return inf;
  }
 
     public  String formatJSON(String jsonString) {
