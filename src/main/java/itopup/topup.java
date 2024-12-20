@@ -130,7 +130,10 @@ public class topup extends login {
     String url = "https://haloship.imediatech.com.vn:8087/ItopupService2.0_IMD/services/TopupInterface";
     String username = "IMEDIA_TEST";
     String password = "24112536637251";
+//            String username = "HANGPTT_TEST";//Tai khoan 0 đ
+//    String password = "74726337729";
     String keyBirthdayTime = "2022/11/29 09:26:01.690";
+//    String keyBirthdayTime = "2024/11/22 10:25:28.260";
     // Chuỗi Private Key dưới dạng PEM
     String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" +
             "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCyVWVR+TP7TGIV\n" +
@@ -185,13 +188,13 @@ public class topup extends login {
 
 
         // ham topup transaction
-         String response = topup.requestHandle(operation,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
+//         String response = topup.requestHandle(operation,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
 
         //ham check transaction
         //String response = topup.requestHandle(1300,topup.username,"HangPTDV_TOPUP_2011202415460017_7896",  topup.token, "",  "",0,0,0,topup.key, topup.privateKey, topup.url);
 
         // ham download transaction
-//        String response = topup.requestHandle(1000,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,555,2,topup.key, topup.privateKey, topup.url);
+        String response = topup.requestHandle(1000,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,1,2,topup.key, topup.privateKey, topup.url);
 
         //ham redownload transaction
         //String response = topup.requestHandle(1100,topup.username,"HangPTDV_TOPUP_2011202416060013_4890",  topup.token, topup.phone,  topup.provider,topup.amount,topup.productID,2,topup.key, topup.privateKey, topup.url);
