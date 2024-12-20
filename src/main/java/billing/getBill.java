@@ -9,7 +9,8 @@ public class getBill extends baseRequestBill{
     String requestID;
     PrivateKey privateKey;
     String url;
-    public getBill(int prCode, String username, String password, String serviceCode, String billingCode, String requestID, PrivateKey privateKey, String url){
+    String typeService;
+    public getBill(int prCode, String username, String password, String serviceCode, String billingCode, String requestID, PrivateKey privateKey, String url,  String typeService){
         this.prCode =prCode;
         this.username = username;
         this.password = password;
@@ -18,6 +19,7 @@ public class getBill extends baseRequestBill{
         this.requestID = requestID;
         this.privateKey = privateKey;
         this.url = url;
+        this.typeService = typeService;
     }
     public  String queryBill(int prCode, String username, String password,String serviceCode,String billingCode, String requestID, PrivateKey privateKey, String url) throws Exception {
         String data = "get_bill#"+username +"#" + password+"#"+requestID+"#"+billingCode+"#"+serviceCode;
@@ -68,7 +70,7 @@ public class getBill extends baseRequestBill{
         String requestID = base.createRequestID("HangPTDV_getBill");
         // Chuyển PEM thành đối tượng PrivateKey
         PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
-        getBill bill = new getBill(1009,username,password,serviceCode,billCode,requestID,privateKey,url);
+        getBill bill = new getBill(1009,username,password,serviceCode,billCode,requestID,privateKey,url,"HD");
 
         String response = bill.queryBill(bill.prCode,bill.username,bill.password,bill.serviceCode,bill.billCode,bill.requestID,bill.privateKey,bill.url);
 //        String status = bill.getInfo(response,"status");
@@ -76,10 +78,11 @@ public class getBill extends baseRequestBill{
         System.out.println("======================================================================");
         System.out.println("Response: \n" + bill.formatJSON(response));
         System.out.println("======================================================================");
-//        if(status.equals("00")){
-//            String data = bill.getInfo(response,"data");
-//            System.out.println();
-//            System.out.println("Final status: " + bill.getInfo(data,"final_status") + " - "+ bill.getInfo(data,"message"));
-//        }
+        System.out.println("Final status:"+ bill.getInf(response,"data","final_status"));
+        if(bill.typeService.equals("HD")){
+            System.out.println("So tien can thanh toan:"+ bill.getInf(response,"data","amount"));
+        } else if(bill.typeService.equals("TC")){
+            System.out.println("So tien can thanh toan:"+ bill.getInf(response,"data","minAmount"));
+        }
     }
 }

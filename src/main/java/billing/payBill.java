@@ -8,16 +8,29 @@ public class payBill extends getBill{
     String referenceCode;
     long amount;
     String phone;
- public payBill(int prCodeBill, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode, long amount, String phone, PrivateKey privateKey, String url){
-     super(0,username, password,serviceCode,billingCode,requestID,privateKey,url);
+    long minAmount;
+ public payBill(int prCodeBill, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode,long minAmount, long amount, String phone, PrivateKey privateKey, String url, String typeService){
+     super(0,username, password,serviceCode,billingCode,requestID,privateKey,url,typeService);
      this.prCodeBill =prCodeBill;
      this.referenceCode = referenceCode;
      this.amount = amount;
+     this.minAmount = minAmount;
      this.phone = phone;
 
  }
-    public  String pay_bill(int prCode, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode, long amount, String phone, PrivateKey privateKey, String url) throws Exception {
-        String data = "pay_bill#"+username +"#" + password+"#"+requestID+"#"+billingCode+"#"+serviceCode+"#"+referenceCode+"#"+ amount;
+    public  String pay_bill(int prCode, String username, String password, String serviceCode, String billingCode, String requestID,String referenceCode, long minAmount, long amount, String phone, PrivateKey privateKey, String url, String typeService) throws Exception {
+     long moneny = 0;
+     if ( typeService.equals("HD")){
+         moneny = amount;
+         minAmount = 0;
+
+
+     } else if (typeService.equals("TC")) {
+         moneny = minAmount;
+
+     }
+        System.out.printf("Thanh toan voi dich vu %s voi so tien %d",typeService,moneny);
+        String data = "pay_bill#"+username +"#" + password+"#"+requestID+"#"+billingCode+"#"+serviceCode+"#"+referenceCode+"#"+ moneny;
         System.out.println("Data payBill:" + data);
         String signature = sign(data, privateKey);
 
@@ -31,7 +44,7 @@ public class payBill extends getBill{
                 "              \"partner_trans_id\": \""+requestID+"\",\n" +
                 "              \"reference_code\": \""+referenceCode+"\",\n" +
                 "              \"authkey\": \""+signature+"\",\n" +
-                "              \"amount\": "+amount+",\n" +
+                "              \"amount\": "+moneny+",\n" +
                 "              \"contact_id\": \""+phone+"\"\n" +
                 "          }\n" +
                 "      }";
@@ -63,24 +76,33 @@ public class payBill extends getBill{
         String url = "http://222.252.17.162:8080/v1/sandbox/services/paybill";
         String username = "integrate_account";
         String password = "a1ec3b73f427c514ab64ce99c891b73f";
-        String serviceCode = "EVN";
+        String serviceCode = "TPB";
         String billCode ="0355273394";
         String requestID = base.createRequestID("HangPTDV_payBill");
-        String referCode = "03552733941732179869336";
-        long amount = 109999;
+
+
         String phone = "0355273394";
 
         // Chuyển PEM thành đối tượng PrivateKey
         PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
 
-        getBill getbill = new getBill(1009,username,password,serviceCode,billCode,requestID,privateKey,url);
-        payBill paybill = new payBill(1010,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,requestID,referCode,amount,phone,getbill.privateKey,getbill.url);
+        getBill getbill = new getBill(1009,"hangptt_test","hangptt_test",serviceCode,billCode,requestID,privateKey,url,"TC");
+//        getBill getbill = new getBill(1009,"hangptt_test","hangptt_test","EVN","0355273394",requestID,privateKey,url,"HD");
         String responseGetBill = getbill.queryBill(getbill.prCode,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,getbill.requestID,getbill.privateKey,getbill.url);
-        System.out.println("Response PayBill: "+ base.formatJSON(responseGetBill));
+        System.out.println("Response GetBill: "+ base.formatJSON(responseGetBill));
         System.out.println("======================================================================");
+        String referCode = getbill.getInf(responseGetBill,"data","reference_code");
+        long amount = Long.parseLong(getbill.getInf(responseGetBill,"data","amount"));
+        long minAmount = Long.parseLong(getbill.getInf(responseGetBill,"data","minAmount")) + 100000;
+//        long minAmount = 0;
 
-       String responsePayBill = paybill.pay_bill(paybill.prCodeBill, paybill.username,paybill.password,paybill.serviceCode,paybill.billCode,paybill.requestID,paybill.referenceCode,paybill.amount,paybill.phone,paybill.privateKey,paybill.url);
+        payBill paybill = new payBill(1010,getbill.username,getbill.password,getbill.serviceCode,getbill.billCode,requestID,referCode,minAmount,amount,phone,getbill.privateKey,getbill.url,getbill.typeService);
+
+
+        String responsePayBill = paybill.pay_bill(paybill.prCodeBill, paybill.username,paybill.password,paybill.serviceCode,paybill.billCode,paybill.requestID,paybill.referenceCode,paybill.minAmount,paybill.amount,paybill.phone,paybill.privateKey,paybill.url, paybill.typeService);
         System.out.println("Response PayBill: "+ base.formatJSON(responsePayBill));
+
+
     }
 
 }
