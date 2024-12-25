@@ -1,6 +1,7 @@
 package itopup;
 import config.readFile;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -47,12 +48,13 @@ public class testTopup {
 
     @Test(dataProvider = "csvData")
     public void exportResultTesting(String ID,String username, String password, String phone, String providerCode, String amount, String errorCode) throws Exception {
-        System.out.println("=======================BEGIN TESTING==============================================");
+        Reporter.setEscapeHtml(true);
+        Reporter.log("=======================BEGIN TESTING==============================================");
         long productAmount = Integer.parseInt(amount);
         PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
         String requestID = base.createRequestID("HangPTDV_TOPUP"); login login = new login(username,  password,  privateKey, url);
         String resLogin = login.requestHandle(1400, username,  password,  privateKey, url);
-        System.out.println("======================================================================");
+        Reporter.log("======================================================================");
 //        System.out.println("Response Login: \n"+ resLogin);
 
         //ham login
@@ -61,12 +63,12 @@ public class testTopup {
         topup topup= new topup(login.username,requestID,  token, phone,  providerCode,productAmount,0,0,"", login.privateKey, login.url);
         String response = topup.requestHandle(1200,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
         String jsonString = topup.decodeJson(response);
-        System.out.println("======================================================================");
+        Reporter.log("======================================================================");
 //        System.out.println("Response Topup: \n" + response);
-        System.out.println("======================================================================");
+        Reporter.log("======================================================================");
         String errorCodeActual = topup.getInfo(jsonString, "errorCode");
-        Assert.assertEquals(errorCodeActual,errorCode,"Fail testing width ID_TESTCASE " + ID);
-        System.out.println("===================================================END TESTING ===================================================");
+        Assert.assertEquals(errorCodeActual,errorCode,"Fail testing with ID_TESTCASE " + ID + "\n Actual errorCode: " + errorCodeActual +"\n Expect errorCode: " + errorCode);
+        Reporter.log("===================================================END TESTING ===================================================");
 
     }
 }
