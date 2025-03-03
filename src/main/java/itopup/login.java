@@ -55,7 +55,7 @@ public  String requestHandle(int operation, String username, String password, Pr
             "    </Body>\n" +
             "</Envelope>";
 
-    System.out.println("Request Login: "+ request);
+    System.out.println("Request Login: "+ request +"\n");
     return sendRequest(url, request);
 
 }
@@ -94,16 +94,16 @@ public  String requestHandle(int operation, String username, String password, Pr
                 "c5DZy1yl2g4BJPashtqNjnCW\n" +
                 "-----END PRIVATE KEY-----";
         // Chuyển PEM thành đối tượng PrivateKey
-        PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
-        login login = new login(username,  password,  privateKey, url);
-        String response = login.requestHandle(1400, login.username,  login.password,  login.privateKey, login.url);
-        String jsonString = login.decodeJson(response);
+//        PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
+//        login login = new login(username,  password,  privateKey, url);
+//        String response = login.requestHandle(1400, login.username,  login.password,  login.privateKey, login.url);
+//        String jsonString = login.decodeJson(response);
         // In chuỗi phản hồi ra console
-        System.out.println("======================================================================");
-        System.out.println("Response: \n" + response);
-        System.out.println("======================================================================");
-        System.out.println("Token: " + login.getInfo(jsonString,"token"));
-        System.out.println("ErrorCode: " + login.getInfo(jsonString,"errorCode"));
+        System.out.println("====--------------------==================================================================");
+//        System.out.println("Response: \n" + response);
+//        System.out.println("======================================================================");
+//        System.out.println("Token: " + login.getInfo(jsonString,"token"));
+//        System.out.println("ErrorCode: " + login.getInfo(jsonString,"errorCode"));
 
     }
 
