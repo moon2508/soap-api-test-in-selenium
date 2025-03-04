@@ -169,8 +169,8 @@ public class topup extends login {
         PrivateKey privateKey = base.getPrivateKeyFromPEM(privateKeyPEM);
         int operation = 1200;
         String requestID = base.createRequestID("HangPTDV_TOPUP");
-        String phone = "0355273393";
-        String provider = "Viettel";
+        String phone = "0911235678";
+        String provider = "DataVinaMD";
         String softpinKey = "70cf4fe7b75b72ddd78cbdb6";
         int productID = 8;
         int quantity = 1;
@@ -190,12 +190,12 @@ public class topup extends login {
 
 
         // ham topup transaction
-         String response = topup.requestHandle(operation,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
+//         String response = topup.requestHandle(operation,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,0,0,topup.key, topup.privateKey, topup.url);
         //ham check transaction
         //String response = topup.requestHandle(1300,topup.username,"HangPTDV_TOPUP_2011202415460017_7896",  topup.token, "",  "",0,0,0,topup.key, topup.privateKey, topup.url);
 
         // ham download transaction
-//        String response = topup.requestHandle(1000,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,567,2,topup.key, topup.privateKey, topup.url);
+        String response = topup.requestHandle(1000,topup.username,topup.requestID,  topup.token, topup.phone,  topup.provider,topup.amount,569,1,topup.key, topup.privateKey, topup.url);
 
         //ham redownload transaction
         //String response = topup.requestHandle(1100,topup.username,"HangPTDV_TOPUP_2011202416060013_4890",  topup.token, topup.phone,  topup.provider,topup.amount,topup.productID,2,topup.key, topup.privateKey, topup.url);
